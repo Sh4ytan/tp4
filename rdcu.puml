@@ -1,0 +1,77 @@
+<!-- ----------------------------------->
+@startuml RDCU-demarrerOuvrirCaisse
+skinparam style strictuml
+Participant "c:Caisse" as C
+Participant "mp:MiseEnPlateau" as MP
+
+
+ -> C: demarrerOuvrirCaisse() 
+ note right : Controleur (Car caisse est un équipement)
+
+ C -> MP: mp = newMiseEnPlateau()
+  note right : Createur (Car Caisse agrege la mise en plateau)
+ 
+@enduml
+<!-- ----------------------------------->
+@startuml RDCU-authentifier
+skinparam style strictuml
+Participant "c:Caisse" as C
+Participant "mapc:Map<identifiant:String, String:mdp>" as MC
+Participant "cer:Caissier" as CER
+ 
+-> C: authentifier(identifiant:string, mdp:string)
+note right : Contrôleur (Caisse est\n l'équipement qui permet\n de saisir les identifiants)
+
+C -> MC: confirmerAuthentification(identifiant: string, mdp:String)
+note right : Expert en information (possède\n les authentifications\n de chaque caissier)
+
+MC -> CER: caissier = getCaissier(caissier: Caissier)
+note right : Expert (possède les informations\n pour que le caissier puisse commencer)
+
+C -> CER: setCaissier(caissier: Caissier)
+note right: Expert (mutateur d'attribut)
+
+@enduml
+<!-- ----------------------------------->
+@startuml RDCU-PoserPlateau
+skinparam style strictuml
+Participant "c:Caisse" as C
+Participant "mpla:Map<identifiant:string, plateau:Plateau>" as MPLA
+Participant "mp:MiseEnPlateau" as MP
+
+
+-> C: PoserPlateau(identifiant: string)
+note right : Contrôleur (Caisse est un équipement)
+
+C-> MPLA: p = getPlateau(identifiant:String) 
+note right: Expert (connait le plateau\n devant être posé\n selon l'identifiant)
+
+C -> MP**: setPlateau(p)
+note right: Expert (mutateur d'attribut)
+
+
+@enduml
+<!-- ----------------------------------->
+
+@startuml RDCU-crediterPlateau
+skinparam style strictuml
+Participant "c:Caisse" as C
+Participant "mp:MiseEnPlateau" as MP
+
+-> C: crediterPlateau(montant:float)
+note right of C: exper en information, mutateur d'attribut
+C->MP: setMontant(montant:float)
+@enduml
+
+@startuml RDCU-fermerTirroirCaisse
+skinparam style strictuml
+Participant "c:Caisse" as C
+
+
+->C: fermerTirroirCaisse()
+note right of C: expert en information, mutateur d'attribut
+C->C: fermetureDuTiroirCaisse()
+
+@enduml
+
+<!-- ----------------------------------->
