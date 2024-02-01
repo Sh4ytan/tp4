@@ -6,10 +6,10 @@ Participant "mp:MiseEnPlateau" as MP
 
 
  -> C: demarrerOuvrirCaisse() 
- note right : Controleur (Car caisse est un équipement)
+ note right : Controleur (Car caisse\n est un équipement)
 
  C -> MP: mp = newMiseEnPlateau()
-  note right : Createur (Car Caisse agrege la mise en plateau)
+  note right : Createur (Caisse agrege\n la mise en plateau)
  
 @enduml
 <!-- ----------------------------------->
@@ -18,6 +18,8 @@ skinparam style strictuml
 Participant "c:Caisse" as C
 Participant "mapc:Map<identifiant:String, String:mdp>" as MC
 Participant "cer:Caissier" as CER
+Participant "mp:MiseEnPlateau" as MP
+Participant "r:Registre" as R
  
 -> C: authentifier(identifiant:string, mdp:string)
 note right : Contrôleur (Caisse est\n l'équipement qui permet\n de saisir les identifiants)
@@ -26,10 +28,16 @@ C -> MC: confirmerAuthentification(identifiant: string, mdp:String)
 note right : Expert en information (possède\n les authentifications\n de chaque caissier)
 
 MC -> CER: caissier = getCaissier(caissier: Caissier)
-note right : Expert (possède les informations\n pour que le caissier puisse commencer)
+note right : Expert (possède les\n informations pour que\n le caissier\n puisse commencer)
+
+CER -> MP: associerCaissier (caissier)
+note right : Expert\n (mutateur\n d'attribut)
 
 C -> CER: setCaissier(caissier: Caissier)
-note right: Expert (mutateur d'attribut)
+note right: Expert (mutateur\n d'attribut)
+
+CER -> R: r = getNextRegistre()
+note right: Expert (mutateur\n d'attribut)
 
 @enduml
 <!-- ----------------------------------->
@@ -38,39 +46,50 @@ skinparam style strictuml
 Participant "c:Caisse" as C
 Participant "mpla:Map<identifiant:string, plateau:Plateau>" as MPLA
 Participant "mp:MiseEnPlateau" as MP
+Participant "r:Registre" as R
 
 
 -> C: PoserPlateau(identifiant: string)
-note right : Contrôleur (Caisse est un équipement)
+note right : Contrôleur (Caisse est\n un équipement)
 
 C-> MPLA: p = getPlateau(identifiant:String) 
 note right: Expert (connait le plateau\n devant être posé\n selon l'identifiant)
 
-C -> MP**: setPlateau(p)
-note right: Expert (mutateur d'attribut)
+C -> MP: setPlateau(p)
+note right: Expert (mutateur\n d'attribut)
+
+MP -> R: getNextRegistre()
 
 
 @enduml
 <!-- ----------------------------------->
 
-@startuml RDCU-crediterPlateau
+@startuml RDCU-SaisirMontant
 skinparam style strictuml
 Participant "c:Caisse" as C
 Participant "mp:MiseEnPlateau" as MP
 
--> C: crediterPlateau(montant:float)
-note right of C: exper en information, mutateur d'attribut
-C->MP: setMontant(montant:float)
+-> C: saisirMontant(montant:Monnaie)
+note right: Contrôleur (Caisse est\n un équipement)
+C->MP: setMontant(montant:Monnaie)
+note right: Expert (mutateur d'attribut, possède\n les connaissances sur la somme\n et les variantes des différentes monnaies)
 @enduml
+<!-- ----------------------------------->
 
-@startuml RDCU-fermerTirroirCaisse
+@startuml RDCU-fermerTirroir
 skinparam style strictuml
 Participant "c:Caisse" as C
+Participant "mp:MisePlateau" as MP
+Participant "r:Registre" as R
 
-
-->C: fermerTirroirCaisse()
-note right of C: expert en information, mutateur d'attribut
+->C: fermerTirroir()
+note right: Contrôleur (la Caisse\n est un équipement)
+C-> MP: mp.setDateHeure(date)
+note right: Expert (mutateur\n d'attribut)
+MP -> R: r = getNextRegistre()
+note right: Expert (mutateur d'attribut)
 C->C: fermetureDuTiroirCaisse()
+note right: Contrôleur\n (Caisse est un\n equipement)
 
 @enduml
 
